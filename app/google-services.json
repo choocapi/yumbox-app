@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1031747554412",
+    "firebase_url": "https://yumbox-56d93-default-rtdb.firebaseio.com",
+    "project_id": "yumbox-56d93",
+    "storage_bucket": "yumbox-56d93.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1031747554412:android:aa52c639c94bbf275bdc49",
+        "android_client_info": {
+          "package_name": "com.example.yumbox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1031747554412-107ounbru4k93c6f1fc9hneka9vivoj9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpr1GrpcPyE_-Kv8DraWH2if_xw8h7yTg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1031747554412-107ounbru4k93c6f1fc9hneka9vivoj9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

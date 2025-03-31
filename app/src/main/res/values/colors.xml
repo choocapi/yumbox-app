@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="iconColor">#FF000000</color>
+    <color name="textColor">#DF4646</color>
+    <color name="startColor">#E85353</color>
+    <color name="endColor">#BE1515</color>
+    <color name="iconSearchColor">#9F4040</color>
+    <color name="iconBackColor">#FEAD1D</color>
+    <color name="greenColor">#4CAF50</color>
+    <color name="yellowColor">#F57F17</color>
+</resources>

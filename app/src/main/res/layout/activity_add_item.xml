@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".Admin.AddItemActivity">
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/backButton"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:background="@android:color/transparent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/arrow_left"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/consolasligaturizedv3"
+                android:text="Thêm món"
+                android:textColor="@color/black"
+                android:textSize="32sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/backButton"
+                app:layout_constraintTop_toTopOf="@+id/backButton" />
+
+            <EditText
+                android:id="@+id/enterFoodName"
+                android:layout_width="0dp"
+                android:layout_height="57dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/edittextshape"
+                android:elevation="5dp"
+                android:fontFamily="@font/consolasligaturizedv3"
+                android:hint="Nhập tên món"
+                android:inputType="text"
+                android:outlineSpotShadowColor="@color/textColor"
+                android:paddingStart="15dp"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView18" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                android:layout_width="0dp"
+                android:layout_height="57dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/edittextshape"
+                app:boxStrokeWidth="0dp"
+                app:boxStrokeWidthFocused="0dp"
+                app:endIconTint="@color/black"
+                app:layout_constraintEnd_toEndOf="@+id/enterFoodName"
+                app:layout_constraintStart_toStartOf="@+id/enterFoodName"
+                app:layout_constraintTop_toBottomOf="@+id/enterFoodName">
+
+                <AutoCompleteTextView
+                    android:id="@+id/listOfTypeFood"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/consolasligaturizedv3"
+                    android:inputType="none"
+                    android:textSize="20sp"
+                    android:singleLine="true"
+                    android:text="Loại món" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <EditText
+                android:id="@+id/enterFoodPrice"
+                android:layout_width="0dp"
+                android:layout_height="57dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/edittextshape"
+                android:elevation="5dp"
+                android:fontFamily="@font/consolasligaturizedv3"
+                android:hint="Nhập giá món"
+                android:inputType="number"
+                android:outlineSpotShadowColor="@color/textColor"
+                android:paddingStart="15dp"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="@+id/enterFoodName"
+                app:layout_constraintStart_toStartOf="@+id/enterFoodName"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+
+            <TextView
+                android:id="@+id/selectImage"
+                android:layout_width="0dp"
+                android:layout_height="57dp"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/edittextshape"
+                android:drawableRight="@drawable/pluse_round"
+                android:fontFamily="@font/consolasligaturizedv3"
+                android:gravity="center_vertical"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:text="Chọn ảnh"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="@+id/enterFoodPrice"
+                app:layout_constraintStart_toStartOf="@+id/enterFoodPrice"
+                app:layout_constraintTop_toBottomOf="@+id/enterFoodPrice" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:cardCornerRadius="15dp"
+                app:layout_constraintEnd_toEndOf="@+id/selectImage"
+                app:layout_constraintStart_toStartOf="@+id/selectImage"
+                app:layout_constraintTop_toBottomOf="@+id/selectImage">
+
+                <ImageView
+                    android:id="@+id/selectedImage"
+                    android:layout_width="175dp"
+                    android:layout_height="110dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/addimage" />
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/textView20"
+                android:layout_width="0dp"
+                android:layout_height="57dp"
+                android:layout_marginTop="16dp"
+                android:textSize="16sp"
+                android:background="@drawable/edittextshape"
+                android:fontFamily="@font/consolasligaturizedv3"
+                android:gravity="center_vertical"
+                android:paddingStart="15dp"
+                android:text="Mô tả"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="@+id/selectImage"
+                app:layout_constraintStart_toStartOf="@+id/selectImage"
+                app:layout_constraintTop_toBottomOf="@+id/cardView7" />
+
+            <EditText
+                android:id="@+id/foodDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@color/white"
+                android:fontFamily="@font/consolasligaturizedv3"
+                android:hint="Thêm mô tả ở đây"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="@+id/textView20"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView20"
+                app:layout_constraintTop_toBottomOf="@+id/textView20" />
+
+            <TextView
+                android:id="@+id/textView21"
+                android:layout_width="0dp"
+                android:layout_height="57dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/edittextshape"
+                android:fontFamily="@font/consolasligaturizedv3"
+                android:gravity="center_vertical"
+                android:paddingStart="15dp"
+                android:textSize="16sp"
+                android:text="Thành phần"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="@+id/textView20"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/textView20"
+                app:layout_constraintTop_toBottomOf="@+id/foodDescription" />
+
+            <EditText
+                android:id="@+id/foodIngredients"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@color/white"
+                android:fontFamily="@font/consolasligaturizedv3"
+                android:hint="Thêm thành phần ở đây"
+                android:textColor="@color/black"
+                app:layout_constraintEnd_toEndOf="@+id/textView21"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView21"
+                app:layout_constraintTop_toBottomOf="@+id/textView21" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/addItemButton"
+                android:layout_width="157dp"
+                android:layout_height="57dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/redbuttonshape"
+                android:fontFamily="@font/consolasligaturizedv3"
+                android:text="Thêm món"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/foodIngredients" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
