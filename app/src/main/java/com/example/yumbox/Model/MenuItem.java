@@ -1,6 +1,9 @@
 package com.example.yumbox.Model;
 
-public class AdminMenuItem {
+import java.io.Serializable;
+import java.util.ArrayList;
+
+public class MenuItem implements Serializable {
     private String foodName;
     private String foodPrice;
     private String foodImage;
@@ -8,13 +11,14 @@ public class AdminMenuItem {
     private String foodIngredients;
     private String foodKey;
     private String foodType;
+    private ArrayList<Feedback> feedbacks;
     private String ownerUid;
     private String nameOfRestaurant;
 
-    public AdminMenuItem() {
+    public MenuItem() {
     }
 
-    public AdminMenuItem(String foodName, String foodPrice, String foodImage, String foodDescription, String foodIngredients, String foodKey, String foodType, String ownerUid, String nameOfRestaurant) {
+    public MenuItem(String foodName, String foodPrice, String foodImage, String foodDescription, String foodIngredients, String foodKey, String foodType, ArrayList<Feedback> feedbacks, String ownerUid, String nameOfRestaurant) {
         this.foodName = foodName;
         this.foodPrice = foodPrice;
         this.foodImage = foodImage;
@@ -22,6 +26,7 @@ public class AdminMenuItem {
         this.foodIngredients = foodIngredients;
         this.foodKey = foodKey;
         this.foodType = foodType;
+        this.feedbacks = feedbacks != null ? feedbacks : new ArrayList<>();
         this.ownerUid = ownerUid;
         this.nameOfRestaurant = nameOfRestaurant;
     }

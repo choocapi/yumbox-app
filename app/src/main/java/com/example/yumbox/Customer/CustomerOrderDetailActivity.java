@@ -1,5 +1,6 @@
 package com.example.yumbox.Customer;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -61,7 +62,12 @@ public class CustomerOrderDetailActivity extends AppCompatActivity {
     }
 
     private void setAdapter() {
-        OrderDetailAdapter orderDetailAdapter = new OrderDetailAdapter(foodNames, foodPrices, foodImages, foodQuantities, this);
+        OrderDetailAdapter orderDetailAdapter = new OrderDetailAdapter(foodNames, foodPrices, foodImages, foodQuantities, this, position -> {
+            CartItem foodItem = recentOrderItems.getOrderItems().get(position);
+            Intent intent = new Intent(this, OrderFeedbackActivity.class);
+            intent.putExtra("FoodItem", foodItem);
+            startActivity(intent);
+        });
         binding.orderDetailRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.orderDetailRecyclerView.setAdapter(orderDetailAdapter);
     }

@@ -16,7 +16,7 @@ import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.interfaces.ItemClickListener;
 import com.denzcoskun.imageslider.models.SlideModel;
-import com.example.yumbox.Model.CustomerMenuItem;
+import com.example.yumbox.Model.MenuItem;
 import com.example.yumbox.R;
 import com.example.yumbox.databinding.FragmentHomeBinding;
 import com.example.yumbox.Customer.Adapter.MenuAdapter;
@@ -35,7 +35,7 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private Dialog loadingDialog;
     private FirebaseDatabase database;
-    private ArrayList<CustomerMenuItem> menuItems;
+    private ArrayList<MenuItem> menuItems;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -103,7 +103,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    CustomerMenuItem menuItem = dataSnapshot.getValue(CustomerMenuItem.class);
+                    MenuItem menuItem = dataSnapshot.getValue(MenuItem.class);
                     menuItems.add(menuItem);
                 }
                 randomPopularItems();
@@ -128,7 +128,7 @@ public class HomeFragment extends Fragment {
         int numItemToShow = Math.min(6, menuItems.size()); // Number of item to show
 
         // New menu item list with random index
-        ArrayList<CustomerMenuItem> subnetMenuItems = new ArrayList<>();
+        ArrayList<MenuItem> subnetMenuItems = new ArrayList<>();
         for (int i = 0; i < numItemToShow; i++) {
             subnetMenuItems.add(menuItems.get(indexList.get(i)));
         }
@@ -136,7 +136,7 @@ public class HomeFragment extends Fragment {
         setPopularItemsAdapter(subnetMenuItems);
     }
 
-    private void setPopularItemsAdapter(ArrayList<CustomerMenuItem> subnetMenuItems) {
+    private void setPopularItemsAdapter(ArrayList<MenuItem> subnetMenuItems) {
         MenuAdapter adapter = new MenuAdapter(subnetMenuItems, getContext());
         binding.popularRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.popularRecyclerView.setAdapter(adapter);

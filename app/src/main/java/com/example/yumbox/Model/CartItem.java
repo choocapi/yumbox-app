@@ -9,19 +9,21 @@ public class CartItem implements Serializable {
     private String foodDescription;
     private String foodIngredients;
     private Integer foodQuantity;
+    private String foodKey;
     private String ownerUid;
     private String nameOfRestaurant;
 
     public CartItem() {
     }
 
-    public CartItem(String foodName, String foodPrice, String foodImage, String foodDescription, String foodIngredients, Integer foodQuantity, String ownerUid, String nameOfRestaurant) {
+    public CartItem(String foodName, String foodPrice, String foodImage, String foodDescription, String foodIngredients, Integer foodQuantity, String foodKey, String ownerUid, String nameOfRestaurant) {
         this.foodName = foodName;
         this.foodPrice = foodPrice;
         this.foodImage = foodImage;
         this.foodDescription = foodDescription;
         this.foodIngredients = foodIngredients;
         this.foodQuantity = foodQuantity;
+        this.foodKey = foodKey;
         this.ownerUid = ownerUid;
         this.nameOfRestaurant = nameOfRestaurant;
     }
@@ -48,6 +50,10 @@ public class CartItem implements Serializable {
 
     public void setFoodQuantity(Integer foodQuantity) {
         this.foodQuantity = foodQuantity;
+    }
+
+    public void setFoodKey(String foodKey) {
+        this.foodKey = foodKey;
     }
 
     public void setOwnerUid(String ownerUid) {
@@ -82,6 +88,10 @@ public class CartItem implements Serializable {
         return foodQuantity;
     }
 
+    public String getFoodKey() {
+        return foodKey;
+    }
+
     public String getOwnerUid() {
         return ownerUid;
     }
@@ -99,6 +109,7 @@ public class CartItem implements Serializable {
                 ", foodDescription='" + foodDescription + '\'' +
                 ", foodIngredients='" + foodIngredients + '\'' +
                 ", foodQuantity=" + foodQuantity +
+                ", foodKey='" + foodKey + '\'' +
                 ", ownerUid='" + ownerUid + '\'' +
                 ", nameOfRestaurant='" + nameOfRestaurant + '\'' +
                 '}';

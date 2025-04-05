@@ -11,10 +11,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.example.yumbox.Customer.Adapter.FeedbackAdapter;
 import com.example.yumbox.Model.CartItem;
-import com.example.yumbox.Model.CustomerMenuItem;
+import com.example.yumbox.Model.Feedback;
+import com.example.yumbox.Model.MenuItem;
 import com.example.yumbox.R;
 import com.example.yumbox.Utils.LoadingDialog;
 import com.example.yumbox.databinding.ActivityCustomerFoodDetailsBinding;
@@ -25,15 +28,20 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class CustomerFoodDetailsActivity extends AppCompatActivity {
     private ActivityCustomerFoodDetailsBinding binding;
     private Dialog loadingDialog;
 
     // Food info
-    private String foodName, foodPrice, foodImage, foodDescription, foodIngredients, foodType, ownerUid, restaurantName;
-    private CustomerMenuItem menuItem;
+    private String foodName, foodPrice, foodImage, foodDescription, foodIngredients, foodKey, foodType, ownerUid, restaurantName;
+    private MenuItem menuItem;
+    private ArrayList<Feedback> feedbacks;
 
     // Firebase
     private DatabaseReference databaseRef;
@@ -52,19 +60,20 @@ public class CustomerFoodDetailsActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Initialize Firebase and auth
+        // Init
+        databaseRef = FirebaseDatabase.getInstance().getReference();
         auth = FirebaseAuth.getInstance();
-
         loadingDialog = LoadingDialog.create(this, "Đang thêm...");
 
         // Get data from Item ViewHolder
-        menuItem = (CustomerMenuItem) getIntent().getSerializableExtra("MenuItem");
+        menuItem = (MenuItem) getIntent().getSerializableExtra("MenuItem");
         if (menuItem != null) {
             foodName = menuItem.getFoodName();
             foodPrice = menuItem.getFoodPrice();
             foodImage = menuItem.getFoodImage();
             foodDescription = menuItem.getFoodDescription();
             foodIngredients = menuItem.getFoodIngredients();
+            foodKey = menuItem.getFoodKey();
             foodType = menuItem.getFoodType();
             ownerUid = menuItem.getOwnerUid();
             restaurantName = menuItem.getNameOfRestaurant();
@@ -78,6 +87,8 @@ public class CustomerFoodDetailsActivity extends AppCompatActivity {
 
         Uri uri = Uri.parse(foodImage);
         Glide.with(this).load(uri).into(binding.detailsFoodImage);
+
+        retriveFeedbacks();
 
         // Go back
         binding.backImageButton.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +106,6 @@ public class CustomerFoodDetailsActivity extends AppCompatActivity {
 
     private void addItemToCart() {
         loadingDialog.show();
-        databaseRef = FirebaseDatabase.getInstance().getReference();
         String userID = auth.getCurrentUser().getUid();
 
         // Check second food has same restaurant with first?
@@ -119,7 +129,7 @@ public class CustomerFoodDetailsActivity extends AppCompatActivity {
             }
 
             private void addItem() {
-                CartItem cartItem = new CartItem(foodName, foodPrice, foodImage, foodDescription, foodIngredients, 1, ownerUid, restaurantName);
+                CartItem cartItem = new CartItem(foodName, foodPrice, foodImage, foodDescription, foodIngredients, 1, foodKey, ownerUid, restaurantName);
 
                 databaseRef.child("Users").child(userID).child("CartItems").push().setValue(cartItem).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -140,6 +150,41 @@ public class CustomerFoodDetailsActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
+    }
+
+    private void retriveFeedbacks() {
+        loadingDialog.show();
+        DatabaseReference feedbackRef = databaseRef.child("MenuItems").child(foodKey).child("feedbacks");
+        feedbacks = new ArrayList<>();
+
+        // Sort by currentTime
+        Query shortingQuery = feedbackRef.orderByChild("currentTime");
+
+        shortingQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    Feedback feedback = dataSnapshot.getValue(Feedback.class);
+                    if (feedback != null) {
+                        feedbacks.add(feedback);
+                    }
+                }
+                Collections.reverse(feedbacks);
+                setAdapter();
+                loadingDialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                loadingDialog.dismiss();
+            }
+        });
+    }
+
+    private void setAdapter() {
+        FeedbackAdapter adapter = new FeedbackAdapter(feedbacks, this);
+        binding.orderFeedbackRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        binding.orderFeedbackRecyclerView.setAdapter(adapter);
     }
 
     private void showToast(String message) {

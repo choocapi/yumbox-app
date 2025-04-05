@@ -23,20 +23,17 @@ public class PasswordToggleHelper {
 
                         Rect touchableArea = new Rect();
                         editText.getGlobalVisibleRect(touchableArea);
-                        touchableArea.left = touchableArea.right - drawableWidth - 50; // Mở rộng 50px
+                        touchableArea.left = touchableArea.right - drawableWidth - 60; // Mở rộng 60px
 
                         if (touchableArea.contains((int) event.getRawX(), (int) event.getRawY())) {
                             isPasswordVisible = !isPasswordVisible;
 
                             if (isPasswordVisible) {
                                 editText.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                                editText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, R.drawable.eye_hide, 0);
                             } else {
                                 editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                                editText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, R.drawable.eye, 0);
                             }
-
-                            // Giữ con trỏ ở cuối dòng sau khi thay đổi inputType
+                            editText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.lock, 0, isPasswordVisible ? R.drawable.eye_hide : R.drawable.eye, 0);
                             editText.setSelection(editText.getText().length());
                             return true;
                         }

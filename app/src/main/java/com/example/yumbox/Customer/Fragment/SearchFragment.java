@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.yumbox.Customer.Adapter.MenuAdapter;
-import com.example.yumbox.Model.CustomerMenuItem;
+import com.example.yumbox.Model.MenuItem;
 import com.example.yumbox.Utils.LoadingDialog;
 import com.example.yumbox.databinding.FragmentSearchBinding;
 import com.google.firebase.database.DataSnapshot;
@@ -34,7 +34,7 @@ public class SearchFragment extends Fragment {
     private MenuAdapter menuAdapter;
 
     // Info
-    private ArrayList<CustomerMenuItem> menuItems, filterMenuItems;
+    private ArrayList<MenuItem> menuItems, filterMenuItems;
     private ArrayList<String> restaurantList, typeFoodList;
 
     // Firebase
@@ -77,7 +77,7 @@ public class SearchFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    CustomerMenuItem menuItem = dataSnapshot.getValue(CustomerMenuItem.class);
+                    MenuItem menuItem = dataSnapshot.getValue(MenuItem.class);
                     menuItems.add(menuItem);
                 }
 
@@ -99,7 +99,7 @@ public class SearchFragment extends Fragment {
         setAdapter(filterMenuItems);
     }
 
-    private void setAdapter(ArrayList<CustomerMenuItem> filterMenuItems) {
+    private void setAdapter(ArrayList<MenuItem> filterMenuItems) {
         menuAdapter = new MenuAdapter(filterMenuItems, getContext());
         binding.menuRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.menuRecyclerView.setAdapter(menuAdapter);
@@ -129,7 +129,7 @@ public class SearchFragment extends Fragment {
         if (query == null || query.isEmpty()) {
             showAllMenuItems();
         } else {
-            for (CustomerMenuItem menuItem : menuItems) {
+            for (MenuItem menuItem : menuItems) {
                 if (type.equals("search")) {
                     if (menuItem.getFoodName().toLowerCase().contains(query.toLowerCase())) {
                         filterMenuItems.add(menuItem);
@@ -147,7 +147,7 @@ public class SearchFragment extends Fragment {
 
     private void getAndDisplayRestaurantList() {
         Set<String> uniqueRestaurants = new HashSet<>();
-        for (CustomerMenuItem menuItem : menuItems) {
+        for (MenuItem menuItem : menuItems) {
             uniqueRestaurants.add(menuItem.getNameOfRestaurant());
         }
         restaurantList = new ArrayList<>(uniqueRestaurants);
@@ -164,7 +164,7 @@ public class SearchFragment extends Fragment {
 
     private void getAndDisplayTypeFoodList() {
         Set<String> uniqueTypeFood = new HashSet<>();
-        for (CustomerMenuItem menuItem : menuItems) {
+        for (MenuItem menuItem : menuItems) {
             uniqueTypeFood.add(menuItem.getFoodType());
         }
         typeFoodList = new ArrayList<>(uniqueTypeFood);

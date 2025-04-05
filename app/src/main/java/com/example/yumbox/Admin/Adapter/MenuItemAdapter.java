@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.yumbox.Model.AdminMenuItem;
+import com.example.yumbox.Model.MenuItem;
 import com.example.yumbox.Model.CartItem;
 import com.example.yumbox.Utils.FormatString;
 import com.example.yumbox.databinding.ItemItemBinding;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.AddItemViewHolder> {
     private Context context;
-    private ArrayList<AdminMenuItem> menuList;
+    private ArrayList<MenuItem> menuList;
     private ArrayList<CartItem> cartItems;
     private int[] itemQuantities;
     private onItemClicked itemClicked;
@@ -31,7 +31,7 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.AddIte
     }
 
     // Constructor
-    public MenuItemAdapter(ArrayList<AdminMenuItem> menuList, Context context, DatabaseReference databaseReference, onItemClicked itemClicked) {
+    public MenuItemAdapter(ArrayList<MenuItem> menuList, Context context, DatabaseReference databaseReference, onItemClicked itemClicked) {
         this.menuList = menuList;
         this.context = context;
         this.databaseReference = databaseReference;
@@ -78,7 +78,7 @@ public class MenuItemAdapter extends RecyclerView.Adapter<MenuItemAdapter.AddIte
         // Bind data to the views
         public void bind(int position) {
             int quatity = itemQuantities[position];
-            AdminMenuItem menuItem = menuList.get(position);
+            MenuItem menuItem = menuList.get(position);
 
             binding.foodName.setText(menuItem.getFoodName());
             binding.shortDesc.setText(menuItem.getFoodDescription());

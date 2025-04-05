@@ -18,13 +18,19 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
     private ArrayList<String> foodNames, foodPrices, foodImages;
     private ArrayList<Integer> foodQuantities;
     private Context context;
+    private onFeedbackClicked feedbackClicked;
 
-    public OrderDetailAdapter(ArrayList<String> foodNames, ArrayList<String> foodPrices, ArrayList<String> foodImages, ArrayList<Integer> foodQuantities, Context context) {
+    public interface onFeedbackClicked {
+        void OnFeedbackClickListener(int position);
+    }
+
+    public OrderDetailAdapter(ArrayList<String> foodNames, ArrayList<String> foodPrices, ArrayList<String> foodImages, ArrayList<Integer> foodQuantities, Context context, onFeedbackClicked feedbackClicked) {
         this.foodNames = foodNames;
         this.foodPrices = foodPrices;
         this.foodImages = foodImages;
         this.foodQuantities = foodQuantities;
         this.context = context;
+        this.feedbackClicked = feedbackClicked;
     }
 
     @NonNull
@@ -60,6 +66,10 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
 
             Uri uri = Uri.parse(foodImages.get(position));
             Glide.with(context).load(uri).into(binding.foodImage);
+
+            binding.feedbackButton.setOnClickListener(v -> {
+                feedbackClicked.OnFeedbackClickListener(position);
+            });
         }
     }
 }

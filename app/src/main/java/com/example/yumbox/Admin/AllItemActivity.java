@@ -12,7 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.yumbox.Admin.Adapter.MenuItemAdapter;
-import com.example.yumbox.Model.AdminMenuItem;
+import com.example.yumbox.Model.MenuItem;
 import com.example.yumbox.R;
 import com.example.yumbox.Utils.LoadingDialog;
 import com.example.yumbox.databinding.ActivityAllItemBinding;
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 public class AllItemActivity extends AppCompatActivity {
     private ActivityAllItemBinding binding;
     private Dialog loadingDialog;
-    private ArrayList<AdminMenuItem> menuItems = new ArrayList<>();
+    private ArrayList<MenuItem> menuItems = new ArrayList<>();
 
     // Firebase
     private DatabaseReference databaseReference;
@@ -76,7 +76,7 @@ public class AllItemActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 menuItems = new ArrayList<>();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    AdminMenuItem menuItem = dataSnapshot.getValue(AdminMenuItem.class);
+                    MenuItem menuItem = dataSnapshot.getValue(MenuItem.class);
                     if (menuItem != null && menuItem.getOwnerUid() != null) {
                         if (menuItem.getOwnerUid().equals(ownerUid)) {
                             menuItems.add(menuItem);
@@ -104,7 +104,7 @@ public class AllItemActivity extends AppCompatActivity {
 
     private void deleteMenuItem(int position) {
         loadingDialog.show();
-        AdminMenuItem menuItemToDelete = menuItems.get(position);
+        MenuItem menuItemToDelete = menuItems.get(position);
         String menuItemKey = menuItemToDelete.getFoodKey();
         DatabaseReference foodItemRef = databaseReference.child("MenuItems").child(menuItemKey);
         foodItemRef.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {

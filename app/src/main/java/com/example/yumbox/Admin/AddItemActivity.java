@@ -17,7 +17,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.yumbox.Model.AdminMenuItem;
+import com.example.yumbox.Model.MenuItem;
 import com.example.yumbox.R;
 import com.example.yumbox.Utils.LoadingDialog;
 import com.example.yumbox.databinding.ActivityAddItemBinding;
@@ -133,7 +133,7 @@ public class AddItemActivity extends AppCompatActivity {
                     imageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                         @Override
                         public void onSuccess(Uri uri) {
-                            AdminMenuItem newItem = new AdminMenuItem(foodName, foodPrice, uri.toString(), foodDescription, foodIngredients, newItemKey, foodType, ownerUid, nameOfRestaurant);
+                            MenuItem newItem = new MenuItem(foodName, foodPrice, uri.toString(), foodDescription, foodIngredients, newItemKey, foodType, new ArrayList<>(), ownerUid, nameOfRestaurant);
 
                             if (newItemKey != null && auth.getCurrentUser() != null) {
                                 // Save food info

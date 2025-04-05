@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.yumbox.Customer.Adapter.MenuAdapter;
-import com.example.yumbox.Model.CustomerMenuItem;
+import com.example.yumbox.Model.MenuItem;
 import com.example.yumbox.Utils.LoadingDialog;
 import com.example.yumbox.databinding.FragmentMenuBottomSheetBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 public class MenuBottomSheetFragment extends BottomSheetDialogFragment {
     private FragmentMenuBottomSheetBinding binding;
     private Dialog loadingDialog;
-    private ArrayList<CustomerMenuItem> menuItems;
+    private ArrayList<MenuItem> menuItems;
 
     // Firebase
     private FirebaseDatabase database;
@@ -72,7 +72,7 @@ public class MenuBottomSheetFragment extends BottomSheetDialogFragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                    CustomerMenuItem menuItem = dataSnapshot.getValue(CustomerMenuItem.class);
+                    MenuItem menuItem = dataSnapshot.getValue(MenuItem.class);
                     menuItems.add(menuItem);
                 }
                 setAdapter();

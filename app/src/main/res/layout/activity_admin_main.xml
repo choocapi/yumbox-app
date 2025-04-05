@@ -83,6 +83,7 @@
                 android:id="@+id/pendingOrderTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/consolasligaturizedv3"
                 android:text="Đơn đang chờ"
@@ -160,6 +161,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
                 android:fontFamily="@font/consolasligaturizedv3"
                 android:text="Doanh thu\nquán"
                 android:textAlignment="center"
@@ -202,13 +204,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:elevation="2dp"
             android:background="@drawable/cardredshape">
 
             <ImageView
                 android:id="@+id/imageView6"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:src="@drawable/pluse_round"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -242,13 +245,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:elevation="2dp"
             android:background="@drawable/cardredshape">
 
             <ImageView
                 android:id="@+id/imageView7"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:src="@drawable/eye_show"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -281,13 +285,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:elevation="2dp"
             android:background="@drawable/cardredshape">
 
             <ImageView
                 android:id="@+id/imageView8"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:src="@drawable/user"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -321,13 +326,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="152dp"
             android:layout_height="match_parent"
+            android:elevation="2dp"
             android:background="@drawable/cardredshape">
 
             <ImageView
                 android:id="@+id/imageView9"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:src="@drawable/statistics"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -360,13 +366,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:elevation="2dp"
             android:background="@drawable/cardredshape">
 
             <ImageView
                 android:id="@+id/imageView10"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:src="@drawable/shopping_bag"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -400,13 +407,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:elevation="2dp"
             android:background="@drawable/cardredshape">
 
             <ImageView
                 android:id="@+id/imageView11"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="15dp"
                 android:src="@drawable/log_out"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

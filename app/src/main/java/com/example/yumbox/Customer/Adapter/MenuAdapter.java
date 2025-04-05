@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.yumbox.Customer.CustomerFoodDetailsActivity;
 import com.example.yumbox.Model.CartItem;
-import com.example.yumbox.Model.CustomerMenuItem;
+import com.example.yumbox.Model.MenuItem;
 import com.example.yumbox.Utils.FormatString;
 import com.example.yumbox.Utils.LoadingDialog;
 import com.example.yumbox.databinding.MenuItemBinding;
@@ -30,17 +30,17 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder> {
-    private ArrayList<CustomerMenuItem> menuItems;
+    private ArrayList<MenuItem> menuItems;
     private Dialog loadingDialog;
     private Context context;
-    private String foodName, foodPrice, foodImage, foodDescription, foodIngredients, ownerUid, restaurantName, userID; // Food info
+    private String foodName, foodPrice, foodImage, foodDescription, foodIngredients, foodKey, ownerUid, restaurantName, userID; // Food info
 
     // Firebase
     private DatabaseReference databaseRef;
     private FirebaseAuth auth;
 
     // Constructor
-    public MenuAdapter(ArrayList<CustomerMenuItem> menuItems, Context context) {
+    public MenuAdapter(ArrayList<MenuItem> menuItems, Context context) {
         this.menuItems = menuItems;
         this.context = context;
 
@@ -91,7 +91,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
 
         // Bind data to ViewHolder
         public void bind(int position) {
-            CustomerMenuItem menuItem = menuItems.get(position);
+            MenuItem menuItem = menuItems.get(position);
 
             // Show
             binding.menuFoodName.setText(menuItem.getFoodName());
@@ -108,7 +108,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
     }
 
     private void openDetailsActivity(int position) {
-        CustomerMenuItem menuItem = menuItems.get(position);
+        MenuItem menuItem = menuItems.get(position);
 
         // Sending data to Intent
         Intent intent = new Intent(context, CustomerFoodDetailsActivity.class);
@@ -116,13 +116,14 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
         context.startActivity(intent);
     }
 
-    private void addItemToCart(CustomerMenuItem menuItem) {
+    private void addItemToCart(MenuItem menuItem) {
         loadingDialog.show();
         foodName = menuItem.getFoodName();
         foodPrice = menuItem.getFoodPrice();
         foodImage = menuItem.getFoodImage();
         foodDescription = menuItem.getFoodDescription();
         foodIngredients = menuItem.getFoodIngredients();
+        foodKey = menuItem.getFoodKey();
         ownerUid = menuItem.getOwnerUid();
         restaurantName = menuItem.getNameOfRestaurant();
 
@@ -147,7 +148,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuAdapter.MenuViewHolder
             }
 
             private void addItem() {
-                CartItem cartItem = new CartItem(foodName, foodPrice, foodImage, foodDescription, foodIngredients, 1, ownerUid, restaurantName);
+                CartItem cartItem = new CartItem(foodName, foodPrice, foodImage, foodDescription, foodIngredients, 1, foodKey, ownerUid, restaurantName);
 
                 databaseRef.child("Users").child(userID).child("CartItems").push().setValue(cartItem).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
