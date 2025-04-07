@@ -38,7 +38,8 @@ import java.util.HashSet;
 public class HistoryFragment extends Fragment {
     private FragmentHistoryBinding binding;
     private Dialog loadingDialog;
-    private ArrayList<OrderDetail> listOfOrderItem;
+    private ArrayList<OrderDetail> listOrderItem;
+    private boolean isOrderReceived, isPaymentReceived;
 
     // Firebase
     private FirebaseDatabase database;
@@ -85,14 +86,18 @@ public class HistoryFragment extends Fragment {
         });
     }
     private void updateOrderStatus() {
-        String itemPushKey = listOfOrderItem.get(0).getItemPushKey();
+        String itemPushKey = listOrderItem.get(0).getItemPushKey();
         DatabaseReference historyOrderRef = database.getReference().child("Users").child(userID).child("BuyHistory").child(itemPushKey);
         DatabaseReference completeOrderRef = database.getReference().child("CompletedOrders").child(itemPushKey);
-        completeOrderRef.child("paymentReceived").setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+        completeOrderRef.child("orderReceived").setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-
-                historyOrderRef.child("paymentReceived").setValue(true);
+                historyOrderRef.child("orderReceived").setValue(true);
+                if (!isPaymentReceived) {
+                    completeOrderRef.child("paymentReceived").setValue(true);
+                    historyOrderRef.child("paymentReceived").setValue(true);
+                }
                 binding.receivedButton.setVisibility(View.INVISIBLE);
                 showToast("Chúc bạn ngon miệng (●'◡'●)");
             }
@@ -100,9 +105,10 @@ public class HistoryFragment extends Fragment {
     }
 
     private void seeItemsOrdered() {
-        OrderDetail orderDetail = listOfOrderItem.get(0);
+        OrderDetail orderDetail = listOrderItem.get(0);
         Intent intent = new Intent(getContext(), CustomerOrderDetailActivity.class);
         intent.putExtra("OrderItems", orderDetail);
+        intent.putExtra("isOrderReceived", isOrderReceived);
         startActivity(intent);
     }
 
@@ -111,7 +117,7 @@ public class HistoryFragment extends Fragment {
         binding.recentBuyItem.setVisibility(View.INVISIBLE);
         userID = auth.getCurrentUser().getUid();
         DatabaseReference buyItemRef = database.getReference().child("Users").child(userID).child("BuyHistory");
-        listOfOrderItem = new ArrayList<>();
+        listOrderItem = new ArrayList<>();
 
         // Sort by currentTime
         Query shortingQuery = buyItemRef.orderByChild("currentTime");
@@ -121,13 +127,13 @@ public class HistoryFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     OrderDetail buyHistoryItem = dataSnapshot.getValue(OrderDetail.class);
-                    listOfOrderItem.add(buyHistoryItem);
+                    listOrderItem.add(buyHistoryItem);
                 }
 
                 // Item at the end is the latest order so we need to reverse the list
-                Collections.reverse(listOfOrderItem);
+                Collections.reverse(listOrderItem);
 
-                if (!listOfOrderItem.isEmpty()) {
+                if (!listOrderItem.isEmpty()) {
                     setDataInRecentBuyItem();
                     setPreviousBuyItemRecycler();
                 }
@@ -144,7 +150,7 @@ public class HistoryFragment extends Fragment {
 
     private void setDataInRecentBuyItem() {
         binding.recentBuyItem.setVisibility(View.VISIBLE);
-        OrderDetail recentOrderItem = listOfOrderItem.get(0);
+        OrderDetail recentOrderItem = listOrderItem.get(0);
 
         binding.buyAgainFoodName.setText(recentOrderItem.getOrderItems().get(0).getFoodName());
         binding.buyAgainPrice.setText(FormatString.formatAmountFromString(recentOrderItem.getOrderItems().get(0).getFoodPrice()));
@@ -153,12 +159,13 @@ public class HistoryFragment extends Fragment {
         Uri uri = Uri.parse(recentOrderItem.getOrderItems().get(0).getFoodImage());
         Glide.with(requireContext()).load(uri).into(binding.buyAgainImage);
 
-        boolean isOrderIsAccepted = listOfOrderItem.get(0).getOrderAccepted();
-        boolean isOrderIsReceived = listOfOrderItem.get(0).getPaymentReceived();
-        if (isOrderIsAccepted && !isOrderIsReceived) {
+        boolean isOrderAccepted = listOrderItem.get(0).getOrderAccepted();
+        isPaymentReceived = listOrderItem.get(0).getPaymentReceived();
+        isOrderReceived = isPaymentReceived && listOrderItem.get(0).getOrderReceived();
+        if (isOrderAccepted && !isOrderReceived) {
             binding.orderStatus.setCardBackgroundColor(Color.GREEN);
             binding.receivedButton.setVisibility(View.VISIBLE);
-        } else if (!isOrderIsAccepted) {
+        } else if (!isOrderAccepted) {
             binding.orderStatus.setCardBackgroundColor(Color.RED);
             binding.receivedButton.setVisibility(View.INVISIBLE);
         } else {
@@ -172,10 +179,10 @@ public class HistoryFragment extends Fragment {
         ArrayList<String> buyAgainPrices = new ArrayList<>();
         ArrayList<String> buyAgainImages = new ArrayList<>();
 
-        for (int i = 1; i < listOfOrderItem.size(); i++) {
-            buyAgainNames.add(listOfOrderItem.get(i).getOrderItems().get(0).getFoodName());
-            buyAgainPrices.add(listOfOrderItem.get(i).getOrderItems().get(0).getFoodPrice());
-            buyAgainImages.add(listOfOrderItem.get(i).getOrderItems().get(0).getFoodImage());
+        for (int i = 1; i < listOrderItem.size(); i++) {
+            buyAgainNames.add(listOrderItem.get(i).getOrderItems().get(0).getFoodName());
+            buyAgainPrices.add(listOrderItem.get(i).getOrderItems().get(0).getFoodPrice());
+            buyAgainImages.add(listOrderItem.get(i).getOrderItems().get(0).getFoodImage());
         }
 
         // Delete item duplicate
@@ -192,7 +199,7 @@ public class HistoryFragment extends Fragment {
         }
 
         BuyAgainAdapter adapter = new BuyAgainAdapter(buyAgainNames, buyAgainPrices, buyAgainImages, getContext(), position -> {
-            OrderDetail orderDetail = listOfOrderItem.get(position + 1);
+            OrderDetail orderDetail = listOrderItem.get(position + 1);
             Intent intent = new Intent(getContext(), CustomerOrderDetailActivity.class);
             intent.putExtra("OrderItems", orderDetail);
             startActivity(intent);

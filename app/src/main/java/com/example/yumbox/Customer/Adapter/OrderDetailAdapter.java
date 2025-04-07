@@ -3,6 +3,7 @@ package com.example.yumbox.Customer.Adapter;
 import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.OrderDetailViewHolder> {
     private ArrayList<String> foodNames, foodPrices, foodImages;
     private ArrayList<Integer> foodQuantities;
+    private Boolean isOrderReceived;
     private Context context;
     private onFeedbackClicked feedbackClicked;
 
@@ -24,11 +26,12 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
         void OnFeedbackClickListener(int position);
     }
 
-    public OrderDetailAdapter(ArrayList<String> foodNames, ArrayList<String> foodPrices, ArrayList<String> foodImages, ArrayList<Integer> foodQuantities, Context context, onFeedbackClicked feedbackClicked) {
+    public OrderDetailAdapter(ArrayList<String> foodNames, ArrayList<String> foodPrices, ArrayList<String> foodImages, ArrayList<Integer> foodQuantities, Boolean isOrderReceived, Context context, onFeedbackClicked feedbackClicked) {
         this.foodNames = foodNames;
         this.foodPrices = foodPrices;
         this.foodImages = foodImages;
         this.foodQuantities = foodQuantities;
+        this.isOrderReceived = isOrderReceived;
         this.context = context;
         this.feedbackClicked = feedbackClicked;
     }
@@ -66,6 +69,12 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
 
             Uri uri = Uri.parse(foodImages.get(position));
             Glide.with(context).load(uri).into(binding.foodImage);
+
+            if (isOrderReceived) {
+                binding.feedbackButton.setVisibility(View.VISIBLE);
+            } else {
+                binding.feedbackButton.setVisibility(View.INVISIBLE);
+            }
 
             binding.feedbackButton.setOnClickListener(v -> {
                 feedbackClicked.OnFeedbackClickListener(position);

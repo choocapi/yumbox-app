@@ -1,7 +1,10 @@
 package com.example.yumbox.Customer;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -10,13 +13,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.yumbox.R;
-import com.example.yumbox.databinding.ActivityPayOutBinding;
 import com.example.yumbox.Customer.Fragment.CongratsBottomSheetFragment;
 import com.example.yumbox.Model.CartItem;
 import com.example.yumbox.Model.OrderDetail;
+import com.example.yumbox.R;
 import com.example.yumbox.Utils.FormatString;
 import com.example.yumbox.Utils.LoadingDialog;
+import com.example.yumbox.Zalopay.Api.CreateOrder;
+import com.example.yumbox.databinding.ActivityPayOutBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -28,13 +32,24 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import vn.zalopay.sdk.Environment;
+import vn.zalopay.sdk.ZaloPayError;
+import vn.zalopay.sdk.ZaloPaySDK;
+import vn.zalopay.sdk.listeners.PayOrderListener;
 
 public class PayOutActivity extends AppCompatActivity {
     private ActivityPayOutBinding binding;
     private ArrayList<CartItem> orderItems;
     private Dialog loadingDialog;
     private String name, address, phone, totalAmount, ownerUid, userID;
+    private Integer selectedPayment;
+    private final Map<String, Integer> paymentOptionsMap = new LinkedHashMap<>();
 
     // Firebase
     private FirebaseAuth auth;
@@ -53,13 +68,24 @@ public class PayOutActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Init Firebase
+        StrictMode.ThreadPolicy policy = new
+                StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        // ZaloPay SDK Init
+        ZaloPaySDK.init(2553, Environment.SANDBOX);
+
+        // Init
         auth = FirebaseAuth.getInstance();
         databaseRef = FirebaseDatabase.getInstance().getReference();
-
         loadingDialog = LoadingDialog.create(this, "Đang đặt món...");
 
         setUserData();
+
+        paymentOptionsMap.put("Trực tiếp", 0);
+        paymentOptionsMap.put("Zalopay", 1);
+        ArrayAdapter<String> paymentOptionsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, new ArrayList<>(paymentOptionsMap.keySet()));
+        binding.paymentOptions.setAdapter(paymentOptionsAdapter);
 
         // Get data from Cart
         orderItems = (ArrayList<CartItem>) getIntent().getSerializableExtra("OrderItems");
@@ -76,32 +102,67 @@ public class PayOutActivity extends AppCompatActivity {
             name = binding.name.getText().toString();
             address = binding.address.getText().toString();
             phone = binding.phone.getText().toString();
+            selectedPayment = paymentOptionsMap.get(binding.paymentOptions.getText().toString());
 
-            if (name.isBlank() || address.isBlank() || phone.isBlank()) {
+            if (name.isBlank() || address.isBlank() || phone.isBlank() || selectedPayment == null) {
                 showToast("Vui lòng nhập đầy đủ thông tin");
-            } else {
-                placeOrder();
+            }
+
+            // Check phone format
+            if (!phone.matches("0\\d{9}")) {
+                showToast("Số điện thoại không hợp lệ");
+                return;
+            }
+
+            if (selectedPayment == 1) {
+                CreateOrder orderApi = new CreateOrder();
+                try {
+                    JSONObject data = orderApi.createOrder(totalAmount);
+                    String code = data.getString("return_code");
+
+                    if (code.equals("1")) {
+                        String token = data.getString("zp_trans_token");
+                        ZaloPaySDK.getInstance().payOrder(PayOutActivity.this, token, "demozpdk://app", new PayOrderListener() {
+                            @Override
+                            public void onPaymentSucceeded(String s, String s1, String s2) {
+                                placeOrder(true);
+                            }
+
+                            @Override
+                            public void onPaymentCanceled(String s, String s1) {
+                                showToast("Thanh toán bị huỷ");
+                            }
+
+                            @Override
+                            public void onPaymentError(ZaloPayError zaloPayError, String s, String s1) {
+                                showToast("Thanh toán thất bại");
+                            }
+                        });
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else if (selectedPayment == 0) {
+                placeOrder(false);
             }
         });
 
         // Go back
-        binding.backButton.setOnClickListener(v -> {
-            finish();
-        });
+        binding.backButton.setOnClickListener(v -> { finish(); });
     }
 
-    private void placeOrder() {
+    private void placeOrder(boolean paymentReceived) {
         loadingDialog.show();
         userID = auth.getCurrentUser().getUid();
         Long time = System.currentTimeMillis();
         String itemPushKey = databaseRef.child("OrderDetails").push().getKey();
-        OrderDetail orderDetail = new OrderDetail(userID, name, orderItems, address, phone, totalAmount, false, false, itemPushKey, time, ownerUid);
+        OrderDetail orderDetail = new OrderDetail(userID, name, orderItems, address, phone, totalAmount, false, paymentReceived, false, selectedPayment, itemPushKey, time, ownerUid);
 
         DatabaseReference orderRef = databaseRef.child("OrderDetails").child(itemPushKey);
         orderRef.setValue(orderDetail).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                showToast("Đặt món thành công");
                 saveUserData();
                 BottomSheetDialogFragment congratsBottomSheet = new CongratsBottomSheetFragment();
                 congratsBottomSheet.show(getSupportFragmentManager(), "CongratsBottomSheet");
@@ -176,6 +237,12 @@ public class PayOutActivity extends AppCompatActivity {
         userRef.child("name").setValue(name);
         userRef.child("address").setValue(address);
         userRef.child("phone").setValue(phone);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        ZaloPaySDK.getInstance().onResult(intent);
     }
 
     private void showToast(String message) {

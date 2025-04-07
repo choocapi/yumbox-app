@@ -155,7 +155,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="60dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="@font/consolasligaturizedv3"
@@ -164,12 +164,33 @@
                 android:textColor="@color/black"
                 android:textSize="18sp" />
 
-            <ImageView
-                android:id="@+id/imageView4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+<!--            <ImageView-->
+<!--                android:id="@+id/imageView4"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                app:srcCompat="@drawable/cashondelivery" />-->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/cashondelivery" />
+                android:layout_marginTop="-3dp"
+                app:boxStrokeWidth="0dp"
+                app:boxStrokeWidthFocused="0dp"
+                app:endIconTint="@color/black">
+
+                <AutoCompleteTextView
+                    android:id="@+id/paymentOptions"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/consolasligaturizedv3"
+                    android:inputType="none"
+                    android:singleLine="true"
+                    android:textSize="16sp"
+                    android:text="Chọn phương thức" />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
 

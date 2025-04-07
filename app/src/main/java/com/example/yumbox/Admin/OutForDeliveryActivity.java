@@ -94,14 +94,16 @@ public class OutForDeliveryActivity extends AppCompatActivity {
 
     private void setDateIntoRecyclerView() {
         ArrayList<String> customerNames = new ArrayList<>();
-        ArrayList<Boolean> moneyStatus = new ArrayList<>();
+        ArrayList<Integer> paymentMethods = new ArrayList<>();
+        ArrayList<Boolean> listIsOrderReceived = new ArrayList<>();
 
         for (OrderDetail completeOrder : listOfCompleteOrder) {
             customerNames.add(completeOrder.getUserName());
-            moneyStatus.add(completeOrder.getPaymentReceived());
+            paymentMethods.add(completeOrder.getPaymentMethod());
+            listIsOrderReceived.add(completeOrder.getOrderReceived() && completeOrder.getPaymentReceived());
         }
 
-        DeliveryAdapter deliveryAdapter = new DeliveryAdapter(customerNames, moneyStatus);
+        DeliveryAdapter deliveryAdapter = new DeliveryAdapter(customerNames, paymentMethods, listIsOrderReceived);
         binding.deliveryRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         binding.deliveryRecyclerView.setAdapter(deliveryAdapter);
     }

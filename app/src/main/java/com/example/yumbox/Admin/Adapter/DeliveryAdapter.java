@@ -12,16 +12,23 @@ import com.example.yumbox.databinding.DeliveryItemBinding;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class DeliveryAdapter extends RecyclerView.Adapter<DeliveryAdapter.DeliveryViewHolder> {
     private ArrayList<String> customerNames;
-    private ArrayList<Boolean> moneyStatus;
+    private ArrayList<Boolean> listIsOrderReceived;
+    private ArrayList<Integer> paymentMethods;
+    private final Map<Integer, String> paymentMethodsMap = new LinkedHashMap<Integer, String>() {{
+        put(0, "Trực tiếp");
+        put(1, "Zalopay");
+    }};
 
     // Constructor
-    public DeliveryAdapter(ArrayList<String> customerNames, ArrayList<Boolean> moneyStatus) {
+    public DeliveryAdapter(ArrayList<String> customerNames, ArrayList<Integer> paymentMethods, ArrayList<Boolean> listIsOrderReceived) {
         this.customerNames = customerNames;
-        this.moneyStatus = moneyStatus;
+        this.paymentMethods = paymentMethods;
+        this.listIsOrderReceived = listIsOrderReceived;
     }
 
     @NonNull
@@ -60,16 +67,20 @@ public class DeliveryAdapter extends RecyclerView.Adapter<DeliveryAdapter.Delive
             colorMap.put(false, Color.RED);
 
             binding.customerName.setText(customerNames.get(position));
-            if (moneyStatus.get(position)) {
+            if (listIsOrderReceived.get(position)) {
                 binding.statusMoney.setText("Đã nhận");
             } else {
                 binding.statusMoney.setText("Chưa nhận");
             }
 
             // Set color for statusMoney and statusColor based on moneyStatus
-            int color = colorMap.getOrDefault(moneyStatus.get(position), Color.BLACK);
+            int color = colorMap.getOrDefault(listIsOrderReceived.get(position), Color.BLACK);
             binding.statusMoney.setTextColor(color);
             binding.statusColor.setBackgroundTintList(ColorStateList.valueOf(color));
+
+            binding.paymentMethod.setText(
+                    paymentMethodsMap.getOrDefault(paymentMethods.get(position), "Không rõ")
+            );
         }
     }
 }

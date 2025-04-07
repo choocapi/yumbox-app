@@ -24,6 +24,7 @@ public class CustomerOrderDetailActivity extends AppCompatActivity {
     private OrderDetail recentOrderItems;
     private ArrayList<String> foodNames, foodPrices, foodImages;
     private ArrayList<Integer> foodQuantities;
+    private boolean isOrderReceived;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,8 @@ public class CustomerOrderDetailActivity extends AppCompatActivity {
         });
 
         // Get data from History
+        isOrderReceived = getIntent().getBooleanExtra("isOrderReceived", false);
+
         recentOrderItems = (OrderDetail) getIntent().getSerializableExtra("OrderItems");
         if (recentOrderItems != null) {
             foodNames = new ArrayList<>();
@@ -62,7 +65,7 @@ public class CustomerOrderDetailActivity extends AppCompatActivity {
     }
 
     private void setAdapter() {
-        OrderDetailAdapter orderDetailAdapter = new OrderDetailAdapter(foodNames, foodPrices, foodImages, foodQuantities, this, position -> {
+        OrderDetailAdapter orderDetailAdapter = new OrderDetailAdapter(foodNames, foodPrices, foodImages, foodQuantities, isOrderReceived, this, position -> {
             CartItem foodItem = recentOrderItems.getOrderItems().get(position);
             Intent intent = new Intent(this, OrderFeedbackActivity.class);
             intent.putExtra("FoodItem", foodItem);

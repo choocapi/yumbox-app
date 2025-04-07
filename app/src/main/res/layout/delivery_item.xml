@@ -38,7 +38,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/paymentMethod"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/consolasligaturizedv3"
@@ -58,8 +58,8 @@
                 android:textColor="#ff3b3b"
                 android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                app:layout_constraintStart_toStartOf="@+id/paymentMethod"
+                app:layout_constraintTop_toBottomOf="@+id/paymentMethod" />
 
             <TextView
                 android:id="@+id/textView2"
