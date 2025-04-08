@@ -5,8 +5,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -17,6 +15,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.yumbox.ForgotPasswordActivity;
 import com.example.yumbox.R;
 import com.example.yumbox.Utils.LoadingDialog;
 import com.example.yumbox.Utils.PasswordToggleHelper;
@@ -40,8 +39,6 @@ import com.google.firebase.database.ValueEventListener;
 public class CustomerLoginActivity extends AppCompatActivity {
     private ActivityCustomerLoginBinding binding;
     private Dialog loadingDialog;
-    private boolean isPasswordVisible = false;
-    private EditText passwordEditText;
     private GoogleSignInClient googleSignInClient;
     private String username, email, address, phone, password, userRole, userID;
 
@@ -98,13 +95,14 @@ public class CustomerLoginActivity extends AppCompatActivity {
             launcher.launch(signIntent);
         });
 
-        // Move to Sign up
-        binding.dontHaveAccountButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(CustomerLoginActivity.this, CustomerSignUpActivity.class);
-                startActivity(intent);
-            }
+        binding.dontHaveAccountButton.setOnClickListener(v -> {
+            Intent intent = new Intent(CustomerLoginActivity.this, CustomerSignUpActivity.class);
+            startActivity(intent);
+        });
+
+        binding.forgotPasswordButton.setOnClickListener(v -> {
+            Intent intent = new Intent(CustomerLoginActivity.this, ForgotPasswordActivity.class);
+            startActivity(intent);
         });
     }
 

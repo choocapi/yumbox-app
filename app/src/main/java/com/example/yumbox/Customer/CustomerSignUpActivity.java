@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -35,8 +34,6 @@ import com.google.firebase.database.FirebaseDatabase;
 public class CustomerSignUpActivity extends AppCompatActivity {
     private ActivityCustomerSignUpBinding binding;
     private Dialog loadingDialog;
-    private boolean isPasswordVisible = false;
-    private EditText passwordEditText;
     private GoogleSignInClient googleSignInClient;
     private String email, password, username, address, phone, dateOfBirth;
 
@@ -148,11 +145,10 @@ public class CustomerSignUpActivity extends AppCompatActivity {
             // Get user input
             username = binding.username.getText().toString().trim();
             email = binding.email.getText().toString().trim();
-            password = binding.password.getText().toString().trim();
         }
 
         if (auth.getCurrentUser() != null) {
-            CustomerModel user = new CustomerModel(username, email, password, address, phone, dateOfBirth);
+            CustomerModel user = new CustomerModel(username, email, address, phone, dateOfBirth);
             String userID = FirebaseAuth.getInstance().getCurrentUser().getUid();
             databaseRef.child("Users").child(userID).setValue(user);
         }

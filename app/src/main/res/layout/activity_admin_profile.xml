@@ -75,7 +75,7 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="57dp"
+            android:layout_height="match_parent"
             android:layout_weight="3"
             android:fontFamily="@font/consolasligaturizedv3"
             android:gravity="center_vertical"
@@ -117,7 +117,7 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="57dp"
+            android:layout_height="match_parent"
             android:layout_weight="3"
             android:fontFamily="@font/consolasligaturizedv3"
             android:gravity="center_vertical"
@@ -160,7 +160,7 @@ for previewing layouts and visual " />
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="57dp"
+            android:layout_height="match_parent"
             android:layout_weight="3"
             android:fontFamily="@font/consolasligaturizedv3"
             android:gravity="center_vertical"
@@ -181,6 +181,7 @@ for previewing layouts and visual " />
             android:inputType="textEmailAddress"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
+            android:enabled="false"
             android:text="admin@gmail.com" />
     </LinearLayout>
 
@@ -201,7 +202,7 @@ for previewing layouts and visual " />
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="57dp"
+            android:layout_height="match_parent"
             android:layout_weight="3"
             android:fontFamily="@font/consolasligaturizedv3"
             android:gravity="center_vertical"
@@ -226,6 +227,7 @@ for previewing layouts and visual " />
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linearLayout5"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -241,19 +243,19 @@ for previewing layouts and visual " />
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="57dp"
+            android:layout_height="match_parent"
             android:layout_weight="3"
             android:fontFamily="@font/consolasligaturizedv3"
             android:gravity="center_vertical"
             android:paddingStart="15dp"
-            android:text="Mật khẩu"
+            android:text="Mật khẩu cũ"
             android:textColor="@color/black"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView18" />
 
         <EditText
-            android:id="@+id/password"
+            android:id="@+id/oldpassword"
             android:layout_width="match_parent"
             android:layout_height="57dp"
             android:layout_weight="1"
@@ -261,8 +263,46 @@ for previewing layouts and visual " />
             android:fontFamily="@font/consolasligaturizedv3"
             android:inputType="textPassword"
             android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:text="abc@123" />
+            android:paddingEnd="10dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/edittextshape"
+        android:elevation="2dp"
+        android:orientation="horizontal"
+        android:outlineSpotShadowColor="@color/textColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:fontFamily="@font/consolasligaturizedv3"
+            android:gravity="center_vertical"
+            android:paddingStart="15dp"
+            android:text="Mật khẩu mới"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView18" />
+
+        <EditText
+            android:id="@+id/newpassword"
+            android:layout_width="match_parent"
+            android:layout_height="57dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/consolasligaturizedv3"
+            android:inputType="textPassword"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton

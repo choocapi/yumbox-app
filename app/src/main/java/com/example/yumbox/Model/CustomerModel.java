@@ -3,7 +3,6 @@ package com.example.yumbox.Model;
 public class CustomerModel {
     private String name;
     private String email;
-    private String password;
     private String address;
     private String phone;
     private String dateOfBirth;
@@ -12,10 +11,9 @@ public class CustomerModel {
     public CustomerModel() {
     }
 
-    public CustomerModel(String name, String email, String password, String address, String phone, String dateOfBirth) {
+    public CustomerModel(String name, String email, String address, String phone, String dateOfBirth) {
         this.name = name;
         this.email = email;
-        this.password = password;
         this.address = address;
         this.phone = phone;
         this.dateOfBirth = dateOfBirth;
@@ -36,14 +34,6 @@ public class CustomerModel {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getAddress() {

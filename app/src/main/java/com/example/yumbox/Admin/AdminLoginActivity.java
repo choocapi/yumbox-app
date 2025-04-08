@@ -11,6 +11,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.yumbox.ForgotPasswordActivity;
 import com.example.yumbox.R;
 import com.example.yumbox.Utils.LoadingDialog;
 import com.example.yumbox.Utils.PasswordToggleHelper;
@@ -71,9 +72,13 @@ public class AdminLoginActivity extends AppCompatActivity {
             }
         });
 
-        // Moving to sign up
         binding.dontHaveAccountButton.setOnClickListener(v -> {
             Intent intent = new Intent(this, AdminSignUpActivity.class);
+            startActivity(intent);
+        });
+
+        binding.forgotPasswordButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, ForgotPasswordActivity.class);
             startActivity(intent);
         });
     }

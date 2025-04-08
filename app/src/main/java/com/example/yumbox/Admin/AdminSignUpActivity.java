@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,8 +28,6 @@ import java.util.List;
 public class AdminSignUpActivity extends AppCompatActivity {
     private ActivityAdminSignUpBinding binding;
     private Dialog loadingDialog;
-    private boolean isPasswordVisible = false;
-    private EditText passwordEditText;
     private String username, nameOfRestaurant, email, password, address, phone;
     private List<String> locationList;
 
@@ -117,12 +114,11 @@ public class AdminSignUpActivity extends AppCompatActivity {
         username = binding.nameOwner.getText().toString().trim();
         nameOfRestaurant = binding.nameRestaurant.getText().toString().trim();
         email = binding.emailOrPhone.getText().toString().trim();
-        password = binding.password.getText().toString().trim();
 
         // Save user info
         if (auth.getCurrentUser() != null) {
             String userId = auth.getCurrentUser().getUid();
-            AdminModel userInfo = new AdminModel(username, userId, nameOfRestaurant, email, password, address, phone);
+            AdminModel userInfo = new AdminModel(username, userId, nameOfRestaurant, email, address, phone);
             databaseRef.child("Users").child(userId).setValue(userInfo);
         }
     }

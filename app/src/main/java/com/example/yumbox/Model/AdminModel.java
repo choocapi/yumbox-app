@@ -5,7 +5,6 @@ public class AdminModel {
     private String ownerUid;
     private String nameOfRestaurant;
     private String email;
-    private String password;
     private String address;
     private String phone;
     private String role;
@@ -13,12 +12,11 @@ public class AdminModel {
     public AdminModel() {
     }
 
-    public AdminModel(String name, String ownerUid, String nameOfRestaurant, String email, String password, String address, String phone) {
+    public AdminModel(String name, String ownerUid, String nameOfRestaurant, String email, String address, String phone) {
         this.name = name;
         this.ownerUid = ownerUid;
         this.nameOfRestaurant = nameOfRestaurant;
         this.email = email;
-        this.password = password;
         this.address = address;
         this.phone = phone;
         this.role = "ownerRestaurant";
@@ -56,18 +54,6 @@ public class AdminModel {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getAddress() {
         return address;
     }
@@ -82,6 +68,10 @@ public class AdminModel {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getRole() {
+        return role;
     }
 
     public void setRole(String role) {

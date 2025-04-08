@@ -70,48 +70,47 @@ public class ProfileFragment extends Fragment {
         loadingDialog = LoadingDialog.create(getContext(), "Đang tải...");
 
         disableEditText();
-
         retrieveAndShowUserInfo();
 
-        // Save updated user info
         binding.saveInfoButton.setOnClickListener(v -> {
             name = binding.name.getText().toString().trim();
             address = binding.address.getText().toString().trim();
             phone = binding.phone.getText().toString().trim();
             dateOfBirth = binding.dateOfBirth.getText().toString().trim();
+            String oldPass = binding.oldpassword.getText().toString().trim();
+            String newPass = binding.newpassword.getText().toString().trim();
 
             if (name.isEmpty() || address.isEmpty() || phone.isEmpty() || dateOfBirth.isEmpty()) {
                 showToast("Vui lòng nhập đầy đủ thông tin");
-            } else {
-                updateUserData(name, address, phone, dateOfBirth);
-                disableEditText();
+                return;
+            }
+
+            updateUserData(name, address, phone, dateOfBirth);
+            disableEditText();
+
+            if (!oldPass.isEmpty() || !newPass.isEmpty()) {
+                if (oldPass.isEmpty() || newPass.isEmpty()) {
+                    showToast("Vui lòng nhập đầy đủ mật khẩu cũ và mới");
+                } else if (newPass.length() < 6) {
+                    showToast("Mật khẩu mới phải từ 6 ký tự trở lên");
+                } else {
+                    updatePassword(oldPass, newPass);
+                }
             }
         });
 
         binding.editButton.setOnClickListener(v -> {
-            binding.name.setEnabled(!binding.name.isEnabled());
-            binding.address.setEnabled(!binding.address.isEnabled());
-            binding.phone.setEnabled(!binding.phone.isEnabled());
-            binding.dateOfBirth.setEnabled(!binding.dateOfBirth.isEnabled());
-            binding.dateOfBirth.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (binding.dateOfBirth.isEnabled()) {
-                        pickDateOfBirth();
-                    }
-                }
-            });
+            toggleEditableFields();
+        });
+
+        binding.dateOfBirth.setOnClickListener(v -> {
+            if (binding.dateOfBirth.isEnabled()) {
+                pickDateOfBirth();
+            }
         });
 
         binding.logoutButton.setOnClickListener(v -> {
-            auth.signOut();
-            userPreferences = new UserPreferences(requireContext());
-            userPreferences.clearUserRole();
-
-            Intent intent = new Intent(getContext(), StartActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            requireActivity().finish();
+            logout();
         });
     }
 
@@ -120,6 +119,44 @@ public class ProfileFragment extends Fragment {
         binding.address.setEnabled(false);
         binding.phone.setEnabled(false);
         binding.dateOfBirth.setEnabled(false);
+        binding.oldpassword.setEnabled(false);
+        binding.newpassword.setEnabled(false);
+    }
+
+    private void toggleEditableFields() {
+        boolean isEditable = !binding.name.isEnabled();
+
+        binding.name.setEnabled(isEditable);
+        binding.address.setEnabled(isEditable);
+        binding.phone.setEnabled(isEditable);
+        binding.dateOfBirth.setEnabled(isEditable);
+        binding.oldpassword.setEnabled(isEditable);
+        binding.newpassword.setEnabled(isEditable);
+    }
+
+    private void updatePassword(String oldPassword, String newPassword) {
+        loadingDialog.show();
+        auth = FirebaseAuth.getInstance();
+
+        auth.getCurrentUser().reauthenticate(
+                com.google.firebase.auth.EmailAuthProvider.getCredential(auth.getCurrentUser().getEmail(), oldPassword)
+        ).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                auth.getCurrentUser().updatePassword(newPassword)
+                        .addOnCompleteListener(updateTask -> {
+                            loadingDialog.dismiss();
+                            if (updateTask.isSuccessful()) {
+                                showToast("Đổi mật khẩu thành công. Đăng nhập lại!");
+                                logout();
+                            } else {
+                                showToast("Đổi mật khẩu thất bại");
+                            }
+                        });
+            } else {
+                loadingDialog.dismiss();
+                showToast("Mật khẩu cũ không đúng");
+            }
+        });
     }
 
     private void updateUserData(String name, String address, String phone, String dateOfBirth) {
@@ -167,6 +204,17 @@ public class ProfileFragment extends Fragment {
                 }
             });
         }
+    }
+
+    private void logout() {
+        auth.signOut();
+        userPreferences = new UserPreferences(requireContext());
+        userPreferences.clearUserRole();
+
+        Intent intent = new Intent(getContext(), StartActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        requireActivity().finish();
     }
 
     private void showToast(String message) {
