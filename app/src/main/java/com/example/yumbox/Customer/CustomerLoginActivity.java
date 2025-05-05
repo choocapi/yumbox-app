@@ -1,13 +1,14 @@
 package com.example.yumbox.Customer;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.IntentSenderRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,16 +17,17 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.yumbox.ForgotPasswordActivity;
+import com.example.yumbox.Model.CustomerModel;
 import com.example.yumbox.R;
 import com.example.yumbox.Utils.LoadingDialog;
 import com.example.yumbox.Utils.PasswordToggleHelper;
 import com.example.yumbox.Utils.UserPreferences;
 import com.example.yumbox.databinding.ActivityCustomerLoginBinding;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.auth.api.identity.BeginSignInRequest;
+import com.google.android.gms.auth.api.identity.Identity;
+import com.google.android.gms.auth.api.identity.SignInClient;
+import com.google.android.gms.auth.api.identity.SignInCredential;
+import com.google.android.gms.common.api.ApiException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -36,11 +38,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
+
 public class CustomerLoginActivity extends AppCompatActivity {
     private ActivityCustomerLoginBinding binding;
     private Dialog loadingDialog;
-    private GoogleSignInClient googleSignInClient;
-    private String username, email, address, phone, password, userRole, userID;
+    private SignInClient oneTapClient;
+    private BeginSignInRequest signInRequest;
+    private String username, email, phone, password, userRole, userId;
 
     // Firebase & Local
     private FirebaseAuth auth;
@@ -68,8 +73,17 @@ public class CustomerLoginActivity extends AppCompatActivity {
         loadingDialog = LoadingDialog.create(this, "Đang đăng nhập...");
 
         // Init Google Sign-In
-        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
-        googleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
+        oneTapClient = Identity.getSignInClient(this);
+        signInRequest = BeginSignInRequest.builder()
+                .setGoogleIdTokenRequestOptions(
+                        BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                                .setSupported(true)
+                                .setServerClientId(getString(R.string.default_web_client_id))
+                                .setFilterByAuthorizedAccounts(false)
+                                .build()
+                )
+                .setAutoSelectEnabled(true) // Option: choose account automatically
+                .build();
 
         // Show/hide password
         PasswordToggleHelper passwordToggleHelper = new PasswordToggleHelper();
@@ -91,8 +105,20 @@ public class CustomerLoginActivity extends AppCompatActivity {
 
         // Button Google Sign-In
         binding.googleButton.setOnClickListener(v -> {
-            Intent signIntent = googleSignInClient.getSignInIntent();
-            launcher.launch(signIntent);
+            oneTapClient.beginSignIn(signInRequest)
+                    .addOnSuccessListener(this, result -> {
+                        try {
+                            IntentSenderRequest intentSenderRequest = new IntentSenderRequest.Builder(result.getPendingIntent().getIntentSender()).build();
+                            oneTapLauncher.launch(intentSenderRequest);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    })
+                    .addOnFailureListener(this, e -> {
+                        showToast("Không thể khởi động One Tap: " + e.getMessage());
+                        Log.d("One tap", "OneTapGoogleSignIn: " + e.getMessage());
+                    });
+
         });
 
         binding.dontHaveAccountButton.setOnClickListener(v -> {
@@ -107,32 +133,44 @@ public class CustomerLoginActivity extends AppCompatActivity {
     }
 
     // Launcher Google Sign-In
-    private ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-        if (result.getResultCode() == Activity.RESULT_OK) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
-            if (task.isSuccessful()) {
-                GoogleSignInAccount account = task.getResult();
-                AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-                auth.signInWithCredential(credential).addOnCompleteListener(t -> {
-                    if (t.isSuccessful()) {
-                        user = auth.getCurrentUser();
-                        userID = user != null ? user.getUid() : null;
-                        checkUserRole(userID);
-                    } else {
-                        showToast("Đăng nhập thất bại");
+    private final ActivityResultLauncher<IntentSenderRequest> oneTapLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartIntentSenderForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK) {
+                    try {
+                        SignInCredential credential = oneTapClient.getSignInCredentialFromIntent(result.getData());
+                        String idToken = credential.getGoogleIdToken();
+                        if (idToken != null) {
+                            AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
+                            FirebaseAuth.getInstance().signInWithCredential(firebaseCredential)
+                                    .addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            user = FirebaseAuth.getInstance().getCurrentUser();
+                                            userId = Objects.requireNonNull(user).getUid();
+                                            email = user.getEmail();
+                                            username = user.getDisplayName();
+                                            phone = user.getPhoneNumber();
+                                            saveUserDataSignInGoogle(email, username, phone);
+                                            checkUserRole(userId);
+                                        } else {
+                                            showToast("Đăng nhập thất bại");
+                                        }
+                                    });
+                        }
+                    } catch (ApiException e) {
+                        e.printStackTrace();
+                        showToast("Lỗi đăng nhập: " + e.getMessage());
                     }
-                });
-            }
-        }
-    });
+                }
+            });
+
 
     private void loginUserAccount(String email, String password) {
         loadingDialog.show();
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 user = auth.getCurrentUser();
-                userID = user != null ? user.getUid() : null;
-                checkUserRole(userID);
+                userId = user != null ? user.getUid() : null;
+                checkUserRole(userId);
                 loadingDialog.dismiss();
             } else {
                 showToast("Email hoặc mật khẩu không đúng");
@@ -141,8 +179,8 @@ public class CustomerLoginActivity extends AppCompatActivity {
         });
     }
 
-    private void checkUserRole(String userID) {
-        databaseRef.child("Users").child(userID).child("role").addValueEventListener(new ValueEventListener() {
+    private void checkUserRole(String userId) {
+        databaseRef.child("Users").child(userId).child("role").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
@@ -193,6 +231,14 @@ public class CustomerLoginActivity extends AppCompatActivity {
             finish();
         } else {
             showToast("Lỗi đăng nhập");
+        }
+    }
+
+    private void saveUserDataSignInGoogle(String email, String username, String phone) {
+        if (auth.getCurrentUser() != null) {
+            CustomerModel user = new CustomerModel(username, email, null, phone, null);
+            String userId = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
+            databaseRef.child("Users").child(userId).setValue(user);
         }
     }
 

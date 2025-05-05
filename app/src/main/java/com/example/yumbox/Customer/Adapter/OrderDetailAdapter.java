@@ -3,7 +3,6 @@ package com.example.yumbox.Customer.Adapter;
 import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -70,11 +69,11 @@ public class OrderDetailAdapter extends RecyclerView.Adapter<OrderDetailAdapter.
             Uri uri = Uri.parse(foodImages.get(position));
             Glide.with(context).load(uri).into(binding.foodImage);
 
-            if (isOrderReceived) {
-                binding.feedbackButton.setVisibility(View.VISIBLE);
-            } else {
-                binding.feedbackButton.setVisibility(View.INVISIBLE);
-            }
+//            if (isOrderReceived) {
+//                binding.feedbackButton.setVisibility(View.VISIBLE);
+//            } else {
+//                binding.feedbackButton.setVisibility(View.INVISIBLE);
+//            }
 
             binding.feedbackButton.setOnClickListener(v -> {
                 feedbackClicked.OnFeedbackClickListener(position);
