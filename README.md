@@ -1,1 +1,1 @@
-## Code by me - Chau Minh Duong
+## Chau Minh Duong
