@@ -10,7 +10,17 @@
 
 ## 🌟 2. TÍNH NĂNG NỔI BẬT
 
-- 
+- Khách hàng:
+  - Đặt món
+  - Thanh toán bằng Zalopay
+  - Kiểm tra lịch sử mua hàng
+  - Theo dõi tình trạng đơn hàng
+  - Đánh giá món ăn
+- Chủ nhà hàng
+  - Duyệt đơn
+  - Quản lý menu
+  - Theo dõi tình trạng đơn hàng
+  - Thống kê doanh thu
 
 ---
 
