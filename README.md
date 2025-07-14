@@ -32,8 +32,8 @@
 | **Firebase** | Backend service platform |
 
 ---
-## 🧪 4. HƯỚNG DẪN CHẠY DỰ ÁN
+## 4. RUN PROJECT
 
-### Bước 1: Clone dự án
+### Step 1: Clone project
 - git clone https://github.com/choocapi/yumbox-app
-### Bước 2: Mở dự án bằng Android Studio
+### Step 2: Open project with Android Studio
