@@ -1,36 +1,35 @@
-## ỨNG DỤNG ĐẶT MÓN ĂN YUMBOX
+## ORDERING FOOD APP - YUMBOX
 
 ---
 
-## 📱 1. SẢN PHẨM VÀ DEMO
+## 1. FINISHED PRODUCT
 - Link app: https://drive.google.com/file/d/1Mbg4EWWpm-HbjvbE9ljM8SEdgTeTF4ES/view?usp=sharing
-- Link demo: 
 
 ---
 
-## 🌟 2. TÍNH NĂNG NỔI BẬT
+## 2. KEY FEATURES
 
-- Khách hàng:
-  - Đặt món
-  - Thanh toán bằng Zalopay
-  - Kiểm tra lịch sử mua hàng
-  - Theo dõi tình trạng đơn hàng
-  - Đánh giá món ăn
-- Chủ nhà hàng
-  - Duyệt đơn
-  - Quản lý menu
-  - Theo dõi tình trạng đơn hàng
-  - Thống kê doanh thu
+- Customers:
+  - Place orders
+  - Pay via Zalopay
+  - Check purchase history
+  - Track order status
+  - Rate dishes
+- Restaurant owners
+  - Approve orders
+  - Manage menu
+  - Track order status
+  - Revenue statistics
 
 ---
 
-## 🧰 3. CÔNG NGHỆ SỬ DỤNG
+## 3. TECHNOLOGIES USED
 
-| Công nghệ | Mô tả |
+| Technology | Description |
 |----------|-------|
-| **Java** | Ngôn ngữ lập trình chính |
+| **Java** | Frontend |
 | **** | |
-| **Firebase** | Nền tảng dịch vụ backend |
+| **Firebase** | Backend service platform |
 
 ---
 ## 🧪 4. HƯỚNG DẪN CHẠY DỰ ÁN
